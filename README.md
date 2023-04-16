@@ -9,14 +9,33 @@ PHP message: Xdebug: [Step Debug] Could not connect to debugging client. Tried: 
 ```
 In all documentation we find that this error is due to a connection problem and that it is usually due to the host or the port. In some cases like this we do not find that it is due to the port.
 
+until now:
+
+Xdebug tries to connect to the debug client by an ip address other than the one assigned
+
+When: 
+
+problemxdebug-php-test-1     | NOTICE: PHP message: Xdebug: [Step Debug] Could not connect to debugging client. Tried: 172.242.0.1:9003 (from REMOTE_ADDR HTTP header), host.docker.internal:9003 (fallback through xdebug.client_host/xdebug.client_port) :-(
+
+the container is:
+
+docker inspect problemxdebug-php-test-1 |grep IPAddress                                                                                     
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.242.0.3",
+
 ## Replication
 
 This project simplifies the connection problem from the docker container with Xdebug, to try to fix it. 
+Now we are introducing a web server "Apache".
 .
 ├── 30-custom.ini
-├── docker-compose.yml
 ├── Dockerfile
-└── Readme.md  -> this file
+├── README.md
+├── apache  -> some files to includes apache in the project
+...
+├── docker-compose.yml
+└── index.php
 
 ```
 #docker -v

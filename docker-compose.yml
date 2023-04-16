@@ -1,6 +1,21 @@
 version: '3'
 
 services:
+  apache-test:
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html/:rw
+      - ./apache/log:/var/log/apache2:rw
+      - ./apache/vhost:/etc/apache2/sites-available:rw
+    environment:
+      - PROJECT_NAME=symfony-demo.local
+    networks:
+      - isolated-nw
 
   php-test:
     build:
@@ -9,15 +24,16 @@ services:
       - ./:/var/www/html:rw
       - ./30-custom.ini:/usr/local/etc/php/conf.d/30-custom.ini      
     extra_hosts:
-      - host.docker.internal:host-gateway
-      
-#     networks:
-#        isolated-nw:
-#           aliases:
-#             - php
-# networks:
-#   isolated-nw:
-#     driver: bridge
-#     ipam:
-#       config:
-#         - subnet: 172.242.0.0/24
+      - host.docker.internal:host-gateway  
+        
+    networks:
+       isolated-nw:
+          aliases:
+            - php
+
+networks:
+  isolated-nw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.242.0.0/24
